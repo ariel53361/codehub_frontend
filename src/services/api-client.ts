@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import useAuthStore from "../store/authStore";
 import BASE_URL from "./base-url";
 
+
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   params: {
@@ -10,10 +11,9 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  
-  async (config) => {
-
+  (config) => {
     const accessToken = useAuthStore.getState().accessToken;
+
     if (accessToken) {
       config.headers.Authorization = `JWT ${accessToken}`;
     }
@@ -48,6 +48,9 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers.Authorization = `JWT ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (err) {
+        useAuthStore.getState().clearAuthData();
+        
+        console.log(useAuthStore.getState().accessToken);
         console.error("Failed to refresh token", err);
         return Promise.reject(error);
       }
@@ -55,7 +58,7 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-// console.log(axiosInstance.defaults.headers.common["Authorization"]);
+
 export interface FetchResponse<T> {
   count: number;
   next: string | null;
@@ -80,10 +83,11 @@ class APIClient<T> {
       .get<T>(`codehub${this.endpoint}/${id}`)
       .then((res) => res.data);
   };
-  patch = (id:string, updatedInstance:T)=>{
+  patch = (id: string, updatedInstance: T) => {
     return axiosInstance
-    .patch<T>(`codehub${this.endpoint}/${id}`,updatedInstance).then((res) => res.data);
-  }
+      .patch<T>(`codehub${this.endpoint}/${id}`, updatedInstance)
+      .then((res) => res.data);
+  };
 }
 
 export { axiosInstance };

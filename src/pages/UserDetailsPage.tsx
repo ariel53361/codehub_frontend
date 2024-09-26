@@ -9,16 +9,17 @@ import {
   Text,
   VStack,
   Avatar,
-  Button
+  Button,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import useUser from "../hooks/useUser";import useAuthStore from "../store/authStore";
-;
+import useUser from "../hooks/useUser";
+import useAuthStore from "../store/authStore";
 
 const UserDetailsPage = () => {
   const { userId } = useParams();
   const { data: user, error, isLoading } = useUser(userId!);
-  const currentUser = useAuthStore(s=>s.user)
+  const currentUser = useAuthStore((s) => s.user);
+
 
   return (
     <HStack justify={"center"} marginY={"30px"}>
@@ -35,9 +36,9 @@ const UserDetailsPage = () => {
         </CardHeader>
         <CardBody>
           <HStack justify={"center"}>
-            <Avatar src={user?.avatar} size={'xl'}/>
+            <Avatar src={user?.avatar} size={"xl"} />
           </HStack>
-          <VStack align={"start"} spacing={"10px"} marginTop={'10px'}>
+          <VStack align={"start"} spacing={"10px"} marginTop={"10px"}>
             <FormLabel htmlFor="username">Username</FormLabel>
             <Input
               id="username"
@@ -61,7 +62,9 @@ const UserDetailsPage = () => {
               <VStack spacing={"20px"}>
                 {error && <Text>{error.message}</Text>}
                 {isLoading && <Spinner />}
-                {currentUser?.id === user?.id && <Button type="submit">Update</Button>}
+                {currentUser?.id === user?.id && (
+                  <Button type="submit">Update</Button>
+                )}
               </VStack>
             </HStack>
           </VStack>

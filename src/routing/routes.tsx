@@ -6,6 +6,7 @@ import LoginForm from "../pages/LoginPage";
 import SignUpPage from "../pages/SignUpPage";
 import CreateRoomPage from "../pages/CreateRoomPage";
 import UserDetailsPage from "../pages/UserDetailsPage";
+import PrivateRoutes from "./privateRoutes";
 
 const router = createBrowserRouter([
   {
@@ -16,8 +17,17 @@ const router = createBrowserRouter([
       { path: "/room/:roomId", element: <RoomPage /> },
       { path: "/login", element: <LoginForm /> },
       { path: "/signup", element: <SignUpPage /> },
-      { path: "/create-room", element: <CreateRoomPage /> },
+      // { path: "/create-room", element: <CreateRoomPage /> },
       { path: "/user-details/:userId", element: <UserDetailsPage /> },
+      {
+        element: <PrivateRoutes />,
+        children: [
+          {
+            path: "/create-room",
+            element: <CreateRoomPage />,
+          },
+        ],
+      },
     ],
   },
 ]);

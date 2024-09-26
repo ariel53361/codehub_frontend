@@ -13,10 +13,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { axiosInstance } from "../services/api-client";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
 import useCreateUser from "../hooks/useCreateUser";
 import PostUser from "../entities/PostUser";
 
@@ -34,10 +31,10 @@ const schema = z.object({
     .any()
     .optional()
     .refine((file: File) => file instanceof Object, "Avatar must be a file")
-    .nullable(), // Allow the avatar to be null if not uploaded
+    .nullable(),
 });
 
-type FormData = z.infer<typeof schema>;
+export type FormData = z.infer<typeof schema>;
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -48,15 +45,15 @@ const SignUpPage = () => {
   } = useCreateUser(() => navigate("/login"));
 
   const onSubmit = (data: FieldValues) => {
-    const file = data.avatar?.[0];
-
+    
     const formData = new FormData();
     formData.append("username", data.username);
     formData.append("password", data.password);
     formData.append("email", data.email);
     formData.append("first_name", data.first_name);
     formData.append("last_name", data.last_name);
-
+    
+    const file = data.avatar?.[0];
     if (file) formData.append("avatar", file);
 
     mutate(formData as unknown as PostUser);
@@ -66,6 +63,7 @@ const SignUpPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+  
   return (
     <HStack justify={"center"} marginY={"30px"}>
       <Card w={"900px"}>
@@ -148,3 +146,4 @@ const SignUpPage = () => {
 };
 
 export default SignUpPage;
+

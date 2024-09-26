@@ -6,7 +6,8 @@ function SortSelector() {
   const roomQuery = useRoomQueryStore((s) => s.roomQuery);
   const onSelectSortOrder = useRoomQueryStore((s) => s.setSortOrder);
   const sortOrders = [
-    { value: "created", label: "Created" },
+    { value: "-latest_message", label: "Recent Activity" },
+    { value: "-created", label: "Created" },
     { value: "-participants_num", label: "Participants" },
   ];
   const currentSortOrder = sortOrders.find(
@@ -15,7 +16,7 @@ function SortSelector() {
   return (
     <Menu>
       <MenuButton as={Button} rightIcon={<BsChevronDown />}>
-        Order by: {currentSortOrder?.label || "Created"}
+        Order by: {currentSortOrder?.label || "Recent Activity"}
       </MenuButton>
       <MenuList>
         {sortOrders.map((order) => (

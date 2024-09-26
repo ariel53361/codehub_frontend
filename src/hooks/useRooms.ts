@@ -2,12 +2,11 @@ import ms from "ms";
 import APIClient, { FetchResponse } from "../services/api-client";
 import { useQuery } from "@tanstack/react-query";
 import Room from "../entities/Room";
-import useRoomQueryStore from "../store/roomQueryStore";
+import { RoomQuery } from "../store/roomQueryStore";
 
 const apiClient = new APIClient<Room>("/rooms");
 
-const useRooms = () => {
-  const roomQuery = useRoomQueryStore((s) => s.roomQuery);
+const useRooms = (roomQuery: RoomQuery) => {
   return useQuery<FetchResponse<Room>, Error>({
     queryKey: ["rooms", roomQuery],
     queryFn: () =>
@@ -16,6 +15,7 @@ const useRooms = () => {
           topic: roomQuery.topic?.id,
           subject: roomQuery.searchText,
           ordering: roomQuery.sortOrder,
+          page: roomQuery.page,
         },
       }),
 

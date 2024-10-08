@@ -9,6 +9,6 @@ const useTopics = () =>
   useQuery<FetchResponse<Topic>>({
     queryKey: ["topics"],
     queryFn: apiClient.getAll,
-    staleTime: ms("1d"),
+    staleTime: ms("12h"),
   });
 export default useTopics;

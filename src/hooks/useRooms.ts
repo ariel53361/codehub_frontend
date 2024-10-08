@@ -12,7 +12,7 @@ const useRooms = (roomQuery: RoomQuery) => {
     queryFn: () =>
       apiClient.getAll({
         params: {
-          topic: roomQuery.topic?.id,
+          topic: roomQuery?.topic?.id,
           subject: roomQuery.searchText,
           ordering: roomQuery.sortOrder,
           page: roomQuery.page,

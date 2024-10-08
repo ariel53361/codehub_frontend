@@ -9,7 +9,7 @@ interface AuthStore {
   refreshToken: string | null;
   setAccessToken: (token: string) => void;
   setRefreshToken: (token: string) => void;
-  // setUser: (user: User | null) => void;
+  setUser: (user: User | null) => void;
   clearAuthData: () => void;
   fetchUser: () => Promise<void>;
 }
@@ -22,7 +22,7 @@ const useAuthStore = create<AuthStore>(
       refreshToken: localStorage.getItem("refreshToken"),
       setAccessToken: (token) => set({ accessToken: token }),
       setRefreshToken: (token) => set({ refreshToken: token }),
-      // setUser: (user) => set({ user }),
+      setUser: (user) => set({ user }),
       clearAuthData: () => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");

@@ -5,13 +5,13 @@ import { AxiosError } from "axios";
 
 
 const useCurrentUser = (postSuccessFuncs?: () => void) => {
-  return useMutation<User, AxiosError, User>({
-    mutationFn: (newUser: User) =>
+  return useMutation<User, AxiosError>({
+    mutationFn: () =>
       axiosInstance.get("codehub/auth/users/me/",).then((res) => res.data),
-    onSuccess: (savedUser, newUser) => {
+    onSuccess: () => {
       if (postSuccessFuncs) postSuccessFuncs();
     },
-    onError: (error, newUser, context) => {},
+    onError: (error, user, context) => {},
   });
 };
 

@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CardBody,
@@ -8,7 +7,6 @@ import {
   Heading,
   HStack,
   Text,
-  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";

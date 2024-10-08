@@ -1,5 +1,4 @@
 import { FieldValues, useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
@@ -16,25 +15,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import useCreateUser from "../hooks/useCreateUser";
 import PostUser from "../entities/PostUser";
+import schema, {type FormData} from "../services/user-schema";
 
-const schema = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Username must have at least 3 characters" }),
-  password: z
-    .string()
-    .min(5, { message: "Password must have at least 5 characters" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  first_name: z.string(),
-  last_name: z.string(),
-  avatar: z
-    .any()
-    .optional()
-    .refine((file: File) => file instanceof Object, "Avatar must be a file")
-    .nullable(),
-});
-
-export type FormData = z.infer<typeof schema>;
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -44,15 +26,16 @@ const SignUpPage = () => {
     isLoading,
   } = useCreateUser(() => navigate("/login"));
 
+  
+
   const onSubmit = (data: FieldValues) => {
-    
     const formData = new FormData();
     formData.append("username", data.username);
     formData.append("password", data.password);
     formData.append("email", data.email);
     formData.append("first_name", data.first_name);
     formData.append("last_name", data.last_name);
-    
+
     const file = data.avatar?.[0];
     if (file) formData.append("avatar", file);
 
@@ -63,7 +46,7 @@ const SignUpPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
-  
+
   return (
     <HStack justify={"center"} marginY={"30px"}>
       <Card w={"900px"}>
@@ -146,4 +129,3 @@ const SignUpPage = () => {
 };
 
 export default SignUpPage;
-

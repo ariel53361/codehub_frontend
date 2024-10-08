@@ -14,17 +14,21 @@ export interface RoomQueryStore {
   setSearchText: (searchText: string) => void;
   setTopic: (topic: Topic | null) => void;
   setSortOrder: (sortOrder: string) => void;
-  RestRoomQuery: () => void;
+  setPage:(pageNumber: number) =>void
+  resetRoomQuery: () => void;
 }
 
 const useRoomQueryStore = create<RoomQueryStore>((set) => ({
-  roomQuery: {page:1, pageSize:10},
-  setSearchText: (searchText) => set(() => ({ roomQuery: { searchText, page:1, pageSize:10 } })),
+  roomQuery: { page: 1, pageSize: 10 },
+  setSearchText: (searchText) =>
+    set(() => ({ roomQuery: { searchText, page: 1, pageSize: 10 } })),
   setTopic: (topic) =>
-    set((store) => ({ roomQuery: { ...store.roomQuery, topic } })),
+    set((store) => ({ roomQuery: { ...store.roomQuery, topic, page:1 } })),
   setSortOrder: (sortOrder) =>
     set((store) => ({ roomQuery: { ...store.roomQuery, sortOrder } })),
-  RestRoomQuery: () => set(() => ({ roomQuery: {page:1, pageSize:10} })),
+  setPage: (page) =>
+    set((store) => ({ roomQuery: { ...store.roomQuery, page } })),
+  resetRoomQuery: () => set(() => ({ roomQuery: { page: 1, pageSize: 10 } })),
 }));
 
 export default useRoomQueryStore;

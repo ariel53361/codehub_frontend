@@ -5,7 +5,7 @@ import useRoomQueryStore from "../store/roomQueryStore";
 const TopicList = () => {
   const selectedTopic = useRoomQueryStore((s) => s.roomQuery.topic);
   const onSelectTopic = useRoomQueryStore((s) => s.setTopic);
-  const RestRoomQuery = useRoomQueryStore((s) => s.RestRoomQuery);
+  const resetRoomQuery = useRoomQueryStore((s) => s.resetRoomQuery);
   const { data } = useTopics();
 
   return (
@@ -16,7 +16,7 @@ const TopicList = () => {
         textColor={selectedTopic ? "" : "#71c6dd"}
         onClick={() => {
           onSelectTopic(null);
-          RestRoomQuery();
+          resetRoomQuery();
         }}
         variant="link"
       >
@@ -26,7 +26,9 @@ const TopicList = () => {
         <Button
           fontWeight={topic.id === selectedTopic?.id ? "bold" : "normal"}
           textColor={topic.id === selectedTopic?.id ? "#71c6dd" : ""}
-          onClick={() => onSelectTopic(topic)}
+          onClick={() => {
+            onSelectTopic(topic);
+          }}
           variant="link"
           key={topic.id}
         >

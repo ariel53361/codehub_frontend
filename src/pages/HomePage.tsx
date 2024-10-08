@@ -1,12 +1,21 @@
-import { Grid, GridItem, Show, HStack, Button } from "@chakra-ui/react";
+import {
+  Grid,
+  GridItem,
+  Show,
+  HStack,
+  Button,
+  Heading,
+  Flex,
+} from "@chakra-ui/react";
 import RecentActivitiesList from "../components/RecentActivitiesList";
-import RoomHeading from "../components/RoomHeading";
 import RoomList from "../components/RoomList";
 import SortSelector from "../components/SortSelector";
 import TopicList from "../components/TopicList";
 import { useNavigate } from "react-router-dom";
+import useRoomQueryStore from "../store/roomQueryStore";
 
 const HomePage = () => {
+  const selectedTopic = useRoomQueryStore((s) => s.roomQuery.topic);
   const navigate = useNavigate();
   return (
     <Grid
@@ -29,7 +38,7 @@ const HomePage = () => {
         </GridItem>
       </Show>
       <GridItem area="main">
-        <RoomHeading />
+        <Heading as={"h1"}>{selectedTopic?.name} Rooms</Heading>
         <HStack marginY={"10px"} justifyContent={"space-between"}>
           <SortSelector />
           <Button onClick={() => navigate("/create-room")} bg="#71c6dd">

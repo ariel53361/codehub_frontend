@@ -1,18 +1,18 @@
-import { Button, HStack, SimpleGrid, Text } from "@chakra-ui/react";
+import { HStack, SimpleGrid } from "@chakra-ui/react";
 import RoomCard from "./RoomCard";
 import RoomCardSkeleton from "./RoomCardSkeleton";
 import useRooms from "../hooks/useRooms";
 import useRoomQueryStore from "../store/roomQueryStore";
+import Pagination from "./Pagination";
+import ApiErrorDisplay from "./ApiErrorDisplay";
 
 const RoomList = () => {
   const roomQuery = useRoomQueryStore((s) => s.roomQuery);
-  const pageSize = useRoomQueryStore((s) => s.roomQuery.pageSize);
   const page = useRoomQueryStore((s) => s.roomQuery.page);
   const setPage = useRoomQueryStore((s) => s.setPage);
-  const { data, error, isLoading } = useRooms({ ...roomQuery, page, pageSize });
+  const { data, error, isLoading } = useRooms({ ...roomQuery, page });
   const skeletons = [1, 2, 3];
-  if (error) return <Text>{error.message}</Text>;
-
+  if (error) return <ApiErrorDisplay error={error} />;
   return (
     <>
       <SimpleGrid gap={6}>
@@ -22,16 +22,14 @@ const RoomList = () => {
           <RoomCard room={room} key={room.id} />
         ))}
       </SimpleGrid>
-      <HStack marginTop={"5px"}>
-        <Button onClick={() => setPage(page - 1)} isDisabled={page === 1}>
-          Previous
-        </Button>
-        <Button
-          onClick={() => setPage(page + 1)}
-          isDisabled={data?.next === null}
-        >
-          Next
-        </Button>
+      <HStack marginTop={"20px"}>
+        {data && (
+          <Pagination
+            currentPage={page}
+            totalCount={data.count}
+            onPageChange={setPage}
+          />
+        )}
       </HStack>
     </>
   );

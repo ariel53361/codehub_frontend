@@ -1,17 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
-import { axiosInstance } from "../services/api-client";
-import User from "../entities/User";
-import PostUser from "../entities/PostUser";
-import { Axios, AxiosError } from "axios";
+import { User } from "../entities/User";
+import AuthAPIClient from "../services/authApiClient";
+import { ApiError } from "../services/apiTypes";
+import { AxiosError } from "axios";
 
-const useCreateUser = (postSuccessFuncs?: () => void) => {
-  return useMutation<User, AxiosError, PostUser>({
-    mutationFn: (newUser: PostUser) =>
-      axiosInstance.post("auth/users/", newUser).then((res) => res.data),
-    onSuccess: (savedUser, newUser) => {
-      if (postSuccessFuncs) postSuccessFuncs();
+const authApiClient = new AuthAPIClient();
+
+const useCreateUser = (postSuccessFunc?: () => void) => {
+  return useMutation<User, AxiosError<ApiError>, FormData>({
+    mutationFn: (newUser) => authApiClient.createUser(newUser),
+    onSuccess: () => {
+      if (postSuccessFunc) postSuccessFunc();
     },
-    onError: (error, newUser, context) => {},
   });
 };
 

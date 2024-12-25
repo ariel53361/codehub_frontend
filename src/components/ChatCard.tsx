@@ -1,38 +1,46 @@
 import {
-  Button,
   Card,
   CardBody,
   CardHeader,
   Flex,
   Heading,
   HStack,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
-import Username from "./Username";
-import Room from "../entities/Room";
+import { Room } from "../entities/Room";
 import useRoomMessages from "../hooks/useRoomMessages";
 import FormatedDate from "./FormatedDate";
 import AddMessageForm from "./AddMessageForm";
 import useAuthStore from "../store/authStore";
 import ChatMessageList from "./ChatMessageList";
-import CodeHubAvatar from "./CodeHubAvatar";
+import LinkedAvatar from "./LinkedAvatar";
+import { useState } from "react";
+import Pagination from "./Pagination";
+import LinkedUsername from "./LinkedUsername";
+import ApiErrorDisplay from "./ApiErrorDisplay";
 
 interface Props {
   room: Room;
 }
 
 const ChatCard = ({ room }: Props) => {
-  const { data, error, isLoading } = useRoomMessages(room.id.toString());
   const host = room.host;
   const accessToken = useAuthStore((s) => s.accessToken);
+  const [page, setPage] = useState(1);
+  const { data, error, isLoading } = useRoomMessages({
+    page,
+    roomId: room.id,
+  });
 
-  if (error) return <Text>{error.message}</Text>;
+  if (error) return <ApiErrorDisplay error={error} />;
+  if (isLoading) return <Spinner />;
   return (
     <Card>
-      <CardHeader bg={"#696d97"} h={"2px"} borderTopRadius={"7px"}>
+      <CardHeader bg={"primaryPurple"} h={"2px"} borderTopRadius={"7px"}>
         <Flex align={"center"} h="100%">
           <Link to={"/"}>
             <IoArrowBack size={"19px"} />
@@ -44,20 +52,23 @@ const ChatCard = ({ room }: Props) => {
         <VStack align={"start"}>
           <HStack justifyContent={"space-between"} w={"100%"}>
             <Heading>{room.subject}</Heading>
-            <Button>JOIN</Button>
+            {data && (
+              <Pagination
+                currentPage={page}
+                totalCount={data.count}
+                onPageChange={setPage}
+              />
+            )}
           </HStack>
           <FormatedDate date={room.created} />
-          <Text color={"#8b8b8b"} fontSize={"12px"}>
+          <Text color={"darkGray"} fontSize={"12px"}>
             HOSTED BY
           </Text>
           <HStack>
-            <CodeHubAvatar
-              user={host}
-              additionalAttributes={{ size: "sm" }}
-            />
-            <Username username={host.username} />
+            <LinkedAvatar user={host} />
+            <LinkedUsername user={host} isHighlighted={true} />
           </HStack>
-          <ChatMessageList />
+          <ChatMessageList roomMessages={data?.results} />
         </VStack>
         {accessToken && <AddMessageForm />}
       </CardBody>

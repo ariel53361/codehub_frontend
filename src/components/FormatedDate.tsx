@@ -1,14 +1,13 @@
-import { Text } from "@chakra-ui/react";
+import { Text, TextProps } from "@chakra-ui/react";
 import { formatDistanceToNow } from "date-fns";
-import React from "react";
 
-interface Props {
+interface Props extends TextProps {
   date: string;
-  optionalAttributes?: object;
 }
-const FormatedDate = ({ date, optionalAttributes }: Props) => {
+
+const FormatedDate = ({ date, ...textProps }: Props) => {
   return (
-    <Text fontWeight={"normal"} {...optionalAttributes}>
+    <Text fontWeight={"normal"} {...textProps}>
       {formatDistanceToNow(new Date(date), {
         addSuffix: true,
       })}

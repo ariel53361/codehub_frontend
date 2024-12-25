@@ -5,7 +5,6 @@ import {
   HStack,
   Button,
   Heading,
-  Flex,
 } from "@chakra-ui/react";
 import RecentActivitiesList from "../components/RecentActivitiesList";
 import RoomList from "../components/RoomList";
@@ -41,7 +40,7 @@ const HomePage = () => {
         <Heading as={"h1"}>{selectedTopic?.name} Rooms</Heading>
         <HStack marginY={"10px"} justifyContent={"space-between"}>
           <SortSelector />
-          <Button onClick={() => navigate("/create-room")} bg="#71c6dd">
+          <Button onClick={() => navigate("/create-room")} bg="primaryBlue">
             + Create Room
           </Button>
         </HStack>

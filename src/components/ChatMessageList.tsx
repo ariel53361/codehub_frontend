@@ -1,18 +1,18 @@
 import { VStack } from "@chakra-ui/react";
 import ChatMessage from "./ChatMessage";
-import useRoomMessages from "../hooks/useRoomMessages";
-import { useParams } from "react-router-dom";
+import { Message } from "../entities/Message";
 
-const ChatMessageList = () => {
-  const { roomId } = useParams();
-  const { data } = useRoomMessages(roomId!);
+interface Props {
+  roomMessages?: Message[];
+}
 
+const ChatMessageList = ({ roomMessages }: Props) => {
   return (
     <VStack
       bg={"#1a202c"}
       align={"start"}
       gap={"20px"}
-      maxH="400px"
+      maxH="700px"
       overflowY="scroll"
       p="25px"
       border="1px solid"
@@ -20,8 +20,8 @@ const ChatMessageList = () => {
       borderRadius="md"
       w={"100%"}
     >
-      {data?.map((m) => (
-        <ChatMessage message={m} key={m.id}></ChatMessage>
+      {roomMessages?.map((m) => (
+        <ChatMessage message={m} key={m.id} />
       ))}
     </VStack>
   );

@@ -1,23 +1,17 @@
-import { Avatar, HStack, Text, VStack } from "@chakra-ui/react";
-import User from "../entities/User";
-import Username from "./Username";
-import CodeHubAvatar from "./CodeHubAvatar";
+import { HStack, VStack } from "@chakra-ui/react";
+import { User } from "../entities/User";
+import LinkedAvatar from "./LinkedAvatar";
+import LinkedUsername from "./LinkedUsername";
 
 interface Props {
   participant: User;
 }
 const ParticipantDetails = ({ participant }: Props) => {
   return (
-    <HStack spacing={'12px'}>
-      <CodeHubAvatar
-        user={participant}
-        additionalAttributes={{ size: "sm" }}
-      />
+    <HStack spacing={"12px"}>
+      <LinkedAvatar user={participant} />
       <VStack spacing={"0px"} align={"start"}>
-        <Text color={"#b2bdbd"}>
-          {participant.first_name} {participant.last_name}
-        </Text>
-        <Username username={participant.username} />
+        <LinkedUsername user={participant} isHighlighted={true} />
       </VStack>
     </HStack>
   );

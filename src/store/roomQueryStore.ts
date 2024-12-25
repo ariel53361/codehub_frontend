@@ -6,29 +6,38 @@ export interface RoomQuery {
   sortOrder?: string;
   searchText?: string;
   page: number;
-  pageSize: number;
 }
+
+export const defaultRoomQuery: RoomQuery = {
+  page: 1,
+};
 
 export interface RoomQueryStore {
   roomQuery: RoomQuery;
   setSearchText: (searchText: string) => void;
   setTopic: (topic: Topic | null) => void;
   setSortOrder: (sortOrder: string) => void;
-  setPage:(pageNumber: number) =>void
+  setPage: (pageNumber: number) => void;
   resetRoomQuery: () => void;
 }
 
 const useRoomQueryStore = create<RoomQueryStore>((set) => ({
-  roomQuery: { page: 1, pageSize: 10 },
+  roomQuery: { ...defaultRoomQuery },
   setSearchText: (searchText) =>
-    set(() => ({ roomQuery: { searchText, page: 1, pageSize: 10 } })),
+    set((store) => ({
+      roomQuery: {
+        ...store.roomQuery,
+        ...defaultRoomQuery,
+        searchText,
+      },
+    })),
   setTopic: (topic) =>
-    set((store) => ({ roomQuery: { ...store.roomQuery, topic, page:1 } })),
+    set((store) => ({ roomQuery: { ...store.roomQuery, topic, page: 1 } })),
   setSortOrder: (sortOrder) =>
     set((store) => ({ roomQuery: { ...store.roomQuery, sortOrder } })),
   setPage: (page) =>
     set((store) => ({ roomQuery: { ...store.roomQuery, page } })),
-  resetRoomQuery: () => set(() => ({ roomQuery: { page: 1, pageSize: 10 } })),
+  resetRoomQuery: () => set(() => ({ roomQuery: defaultRoomQuery })),
 }));
 
 export default useRoomQueryStore;

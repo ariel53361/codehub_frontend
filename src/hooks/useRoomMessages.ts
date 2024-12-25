@@ -1,16 +1,23 @@
+import ms from "ms";
+import APIClient from "../services/apiClient";
+import { ApiError, FetchResponse } from "../services/apiTypes";
 import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../services/api-client";
-import Message from "../entities/Message";
+import { Message } from "../entities/Message";
+import { AxiosError } from "axios";
 
-const useRoomMessages = (id: string) => {
-  return useQuery<Message[], Error>({
-    queryKey: ["rooms", id, "messages"],
+interface RoomMessagesQuery {
+  roomId: number;
+  page: number;
+}
+
+const useRoomMessages = (query: RoomMessagesQuery) => {
+  const apiClient = new APIClient<Message>(`/rooms/${query.roomId}/messages/`);
+  return useQuery<FetchResponse<Message>, AxiosError<ApiError>>({
+    queryKey: ["room", query],
     queryFn: () =>
-      axiosInstance
-        .get(`codehub/rooms/${id}/messages/`)
-        .then((response) => response.data)
-        .catch((err) => err),
-    staleTime: 1000,
+      apiClient.getAll({ params: { page: query.page.toString() } }),
+    staleTime: ms("1s"),
+    keepPreviousData: true,
   });
 };
 

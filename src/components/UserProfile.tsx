@@ -1,29 +1,32 @@
-import { Avatar, HStack, Text } from "@chakra-ui/react";
+import { Button, HStack, Text } from "@chakra-ui/react";
 import useAuthStore from "../store/authStore";
 import { Link, useNavigate } from "react-router-dom";
-import CodeHubAvatar from "./CodeHubAvatar";
+import LinkedAvatar from "./LinkedAvatar";
+import { UserAvatar } from "./UserAvatar";
 
 const UserProfile = () => {
-  const { user, clearAuthData } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const clearAuthData = useAuthStore((s) => s.clearAuthData);
   const navigate = useNavigate();
+
   return (
     <HStack>
-      {/* fix issue where the avatar is showen only if uses Avatar (not with CodeHubAvatar) */}
-      <Avatar src={user?.avatar} size="sm" />
+      {user ? <LinkedAvatar user={user} /> : <UserAvatar />}
+
       {user?.username ? (
         <HStack gap={"30px"}>
           <Text whiteSpace={"nowrap"}>
             welcome <Link to={`/user-details/${user.id}`}>{user.username}</Link>
           </Text>
-          <Text
+          <Button
+            variant="link"
             onClick={() => {
               clearAuthData();
               navigate("/");
             }}
-            cursor="pointer"
           >
             Logout
-          </Text>
+          </Button>
         </HStack>
       ) : (
         <Link to={"/login"}>Login</Link>

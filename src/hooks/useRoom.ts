@@ -1,13 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
 import ms from "ms";
-import APIClient from "../services/api-client";
-import Room from "../entities/Room";
+import { useQuery } from "@tanstack/react-query";
+import APIClient from "../services/apiClient";
+import { Room } from "../entities/Room";
+import { AxiosError } from "axios";
+import { ApiError } from "../services/apiTypes";
 
 const apiClient = new APIClient<Room>("/rooms");
+
 const useRoom = (id: string) =>
-  useQuery({
-    queryKey: ["rooms", id],
+  useQuery<Room, AxiosError<ApiError>>({
+    queryKey: ["room", id],
     queryFn: () => apiClient.get(id),
+    staleTime: ms("30s"),
   });
 
 export default useRoom;

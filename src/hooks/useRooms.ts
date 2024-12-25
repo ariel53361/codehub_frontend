@@ -1,13 +1,15 @@
 import ms from "ms";
-import APIClient, { FetchResponse } from "../services/api-client";
+import APIClient from "../services/apiClient";
+import { ApiError, FetchResponse } from "../services/apiTypes";
 import { useQuery } from "@tanstack/react-query";
-import Room from "../entities/Room";
+import { Room } from "../entities/Room";
 import { RoomQuery } from "../store/roomQueryStore";
+import { AxiosError } from "axios";
 
 const apiClient = new APIClient<Room>("/rooms");
 
 const useRooms = (roomQuery: RoomQuery) => {
-  return useQuery<FetchResponse<Room>, Error>({
+  return useQuery<FetchResponse<Room>, AxiosError<ApiError>>({
     queryKey: ["rooms", roomQuery],
     queryFn: () =>
       apiClient.getAll({
@@ -20,6 +22,7 @@ const useRooms = (roomQuery: RoomQuery) => {
       }),
 
     staleTime: ms("5m"),
+    keepPreviousData: true,
   });
 };
 

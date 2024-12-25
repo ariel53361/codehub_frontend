@@ -1,7 +1,7 @@
-import Topic  from "./Topic";
-import User from "./User";
+import Topic from "./Topic";
+import { User } from "./User";
 
-export default interface Room {
+export interface Room {
   id: number;
   topic: Topic;
   subject: string;
@@ -9,4 +9,10 @@ export default interface Room {
   participants: User[];
   participants_num: number;
   created: string;
+}
+
+export interface RoomPayload {
+  topic: Topic;
+  subject: string;
+  // description: string;
 }

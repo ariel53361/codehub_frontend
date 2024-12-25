@@ -1,5 +1,3 @@
-import { FieldValues, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
@@ -9,117 +7,93 @@ import {
   FormLabel,
   HStack,
   Input,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import useCreateUser from "../hooks/useCreateUser";
-import PostUser from "../entities/PostUser";
-import schema, {type FormData} from "../services/user-schema";
-
+import { createUserSchema } from "../schemas/userSchema";
+import { baseFormFields } from "../constants/formFields";
+import { FieldValues, useForm } from "react-hook-form";
+import { UserPayload } from "../entities/User";
+import { zodResolver } from "@hookform/resolvers/zod";
+import ApiErrorDisplay from "../components/ApiErrorDisplay";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+
+  const formFields = baseFormFields;
   const {
-    mutate,
-    error: serverErrors,
+    mutate: createUser,
+    error: createUserErrors,
     isLoading,
-  } = useCreateUser(() => navigate("/login"));
-
-  
-
-  const onSubmit = (data: FieldValues) => {
-    const formData = new FormData();
-    formData.append("username", data.username);
-    formData.append("password", data.password);
-    formData.append("email", data.email);
-    formData.append("first_name", data.first_name);
-    formData.append("last_name", data.last_name);
-
-    const file = data.avatar?.[0];
-    if (file) formData.append("avatar", file);
-
-    mutate(formData as unknown as PostUser);
-  };
+  } = useCreateUser(() => {
+    navigate("/login");
+  });
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+    formState: { errors: validationErrors },
+  } = useForm<UserPayload>({
+    resolver: zodResolver(createUserSchema),
+  });
+
+  const onSubmit = (formData: FieldValues) => {
+    const userFormData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "avatar") {
+        if (value instanceof File) {
+          userFormData.append("avatar", value);
+        } 
+      } else {
+        if (value !== undefined) {
+          userFormData.append(key, value);
+        }
+      }
+    });
+    createUser(userFormData);
+  };
 
   return (
     <HStack justify={"center"} marginY={"30px"}>
-      <Card w={"900px"}>
+      <Card w={"500px"}>
         <CardHeader
-          bg={"#696d97"}
+          bg={"primaryPurple"}
           h={"20px"}
           borderTopRadius={"7px"}
           display={"flex"}
           justifyContent="center"
           alignItems="center"
         >
-          SIGN UP
+          Sign Up
         </CardHeader>
         <CardBody>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <VStack spacing="20px" align={"start"}>
-              <Box w={"100%"}>
-                <FormLabel htmlFor="username">Username</FormLabel>
-                <Input {...register("username")} id="username" type="text" />
-                {errors.username && <Text>{errors.username.message}</Text>}
-              </Box>
-              <Box w={"100%"}>
-                <FormLabel htmlFor="email">Email</FormLabel>
-                <Input {...register("email")} id="email" type="text" />
-                {errors.email && <Text>{errors.email.message}</Text>}
-              </Box>
-              <Box w={"100%"}>
-                <FormLabel htmlFor="password">Password</FormLabel>
-                <Input
-                  {...register("password")}
-                  id="password"
-                  type="password"
-                />
-                {errors.password && <Text>{errors.password.message}</Text>}
-              </Box>
-              {/* <FormControl id="confirmPassword" isRequired>
-                <FormLabel htmlFor="confirmPassword">
-                  Confirm Password
-                </FormLabel>
-                <Input id="confirmPassword" type="password" />
-              </FormControl> */}
-              <Box w={"100%"}>
-                <FormLabel htmlFor="first_name">First Name</FormLabel>
-                <Input
-                  {...register("first_name")}
-                  id="first_name"
-                  type="text"
-                />
-                {errors.first_name && <Text>{errors.first_name.message}</Text>}
-              </Box>
-              <Box w={"100%"}>
-                <FormLabel htmlFor="last_name">Last Name</FormLabel>
-                <Input {...register("last_name")} id="last_name" type="text" />
-                {errors.last_name && <Text>{errors.last_name.message}</Text>}
-              </Box>
-              <Box w={"100%"}>
-                <FormLabel htmlFor="avatar">Avatar</FormLabel>
-                <Input
-                  {...register("avatar")}
-                  id="avatar"
-                  type="file"
-                  accept="image/*"
-                />
-                {errors.avatar && errors.avatar.message && (
-                  <Text>{errors.avatar.message?.toString()}</Text>
-                )}
-              </Box>
-              <HStack justify={"center"} w={"100%"}>
-                <Button type="submit" colorScheme="blue" width="100px">
-                  Register
+            <VStack spacing="4" align="start">
+              {formFields.map((field) => (
+                <Box key={field.id} w="100%">
+                  <FormLabel htmlFor={field.id}>{field.label}</FormLabel>
+                  <Input
+                    {...register(field.id)}
+                    id={field.id}
+                    type={field.type}
+                    accept={field.accept}
+                  />
+                  {validationErrors[field.id] && (
+                    <Text color="red">
+                      {validationErrors[field.id]?.message}
+                    </Text>
+                  )}
+                </Box>
+              ))}
+              <ApiErrorDisplay error={createUserErrors}/>
+              <HStack justify="center" w="100%" spacing="4">
+                <Button type="submit" isDisabled={isLoading}>
+                  Sign Up
                 </Button>
               </HStack>
-              {/* {serverErrors?.response?.data.map(())} */}
+              {isLoading && <Spinner />}
             </VStack>
           </form>
         </CardBody>

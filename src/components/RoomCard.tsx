@@ -1,6 +1,5 @@
 import { MdPeopleAlt } from "react-icons/md";
 import {
-  Avatar,
   Box,
   Card,
   CardBody,
@@ -10,11 +9,12 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
-import Room from "../entities/Room";
+import { Room } from "../entities/Room";
 import RoomParticipants from "./RoomParticipants";
 import { Link } from "react-router-dom";
 import FormatedDate from "./FormatedDate";
-import CodeHubAvatar from "./CodeHubAvatar";
+import LinkedAvatar from "./LinkedAvatar";
+import LinkedUsername from "./LinkedUsername";
 
 interface Props {
   room: Room;
@@ -24,15 +24,19 @@ const RoomCard = ({ room }: Props) => {
   return (
     <Card borderRadius={10} height="200px">
       <CardBody>
-        <Flex gap="12px" flexDirection="column" justifyContent="space-between">
-          {/* 1-avatar, name and date */}
+        <Flex
+          gap="12px"
+          flexDirection="column"
+          justifyContent="space-between"
+          height="100%"
+        >
           <Flex alignItems="center" justifyContent="space-between">
             <Flex gap="2" alignItems="center">
-              <CodeHubAvatar
+              <LinkedAvatar
                 user={room.host}
-                additionalAttributes={{ border: "2px solid #71c6dd", size: "sm" }}
+                border="2px solid var(--chakra-colors-primaryBlue)"
               />
-              <Text>{room.host.username}</Text>
+              <LinkedUsername user={room.host} />
             </Flex>
             <FormatedDate date={room.created} />
           </Flex>
@@ -50,7 +54,7 @@ const RoomCard = ({ room }: Props) => {
           <Flex justifyContent="space-between">
             <HStack>
               <MdPeopleAlt size={20} />
-              <Text color={"#b2bdbd"}>{room.participants_num} Joined</Text>
+              <Text color={"lightGray"}>{room.participants_num} Joined</Text>
             </HStack>
             <Text>{room.topic.name}</Text>
           </Flex>

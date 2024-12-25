@@ -1,26 +1,32 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Room from "../entities/Room";
+import { Room } from "../entities/Room";
 import useRoomQueryStore from "../store/roomQueryStore";
-import { axiosInstance, FetchResponse } from "../services/api-client";
-import { useNavigate } from "react-router-dom";
-import PostRoom from "../entities/PostRoom";
+import { ApiError, FetchResponse } from "../services/apiTypes";
+import { RoomPayload } from "../entities/Room";
+import APIClient from "../services/apiClient";
+import { AxiosError } from "axios";
 
 interface AddRoomContext {
   previousRooms: Room[];
 }
+
+const apiClient = new APIClient<RoomPayload>("/rooms");
+
 const useCreateRoom = (postSuccessFuncs?: () => void) => {
   const roomQuery = useRoomQueryStore((s) => s.roomQuery);
   const queryClient = useQueryClient();
-  return useMutation<FetchResponse<Room>, Error, PostRoom, AddRoomContext>({
-    mutationFn: (newRoom: PostRoom) =>
-      axiosInstance.post("codehub/rooms/", newRoom).then((res) => res.data),
-    onSuccess: (savedRoom, newRoom) => {
+
+  return useMutation<
+    FetchResponse<Room>,
+    AxiosError<ApiError>,
+    RoomPayload,
+    AddRoomContext
+  >({
+    mutationFn: (newRoom: RoomPayload) => apiClient.post(newRoom),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["rooms", roomQuery] });
-      queryClient.invalidateQueries({ queryKey: ["topics"] }); // to re-render the topic room_num field
+      queryClient.invalidateQueries({ queryKey: ["topics"] });
       if (postSuccessFuncs) postSuccessFuncs();
-    },
-    onError: (error, newRoom, context) => {
- 
     },
   });
 };

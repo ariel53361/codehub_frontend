@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import {
   Button,
   Card,
@@ -12,18 +12,17 @@ import {
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import useLogin from "../hooks/useLogin";
+import ApiErrorDisplay from "../components/ApiErrorDisplay";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { error, isLoading, mutate } = useLogin(() => navigate("/"));
+  const { error, isLoading, mutate: login } = useLogin(() => navigate("/"));
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate({ username, password });
-
-    // axiosInstance.defaults.headers.common["Authorization"] = `JWT ${access}`;
+    login({ username, password });
   };
 
   return (
@@ -31,7 +30,7 @@ const LoginForm = () => {
       <HStack justify={"center"} marginY={"30px"}>
         <Card w={"500px"}>
           <CardHeader
-            bg={"#696d97"}
+            bg={"primaryPurple"}
             h={"20px"}
             borderTopRadius={"7px"}
             display={"flex"}
@@ -60,7 +59,9 @@ const LoginForm = () => {
                       <Text color={"#71c6dd"}>Sign Up</Text>
                     </Link>
                   </VStack>
-                  {error && <Text>{error.message}</Text>}
+                  {/* <FormattedApiErrors errorMessages={error?.messages} />
+                  {error && <Text>{error.message}</Text>} */}
+                  <ApiErrorDisplay error={error} />
                   {isLoading && <Spinner />}
                 </VStack>
               </HStack>

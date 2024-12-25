@@ -1,8 +1,8 @@
-import { Avatar, Text } from "@chakra-ui/react";
-import User from "../entities/User";
-import CodeHubAvatar from "./CodeHubAvatar";
+import { Text } from "@chakra-ui/react";
+import { User } from "../entities/User";
+import LinkedAvatar from "./LinkedAvatar";
 
-const MAX_PARTICIPANTS_NUM = 12;
+const maxParticipants = 12;
 
 interface Props {
   participants: User[];
@@ -11,15 +11,13 @@ interface Props {
 const RoomParticipants = ({ participants }: Props) => {
   return (
     <>
-      {participants.slice(0, MAX_PARTICIPANTS_NUM).map((participant) => (
-        // need to fix: should send all participants witout the room opener
-        <CodeHubAvatar
+      {participants.slice(0, maxParticipants).map((participant) => (
+        <LinkedAvatar
           key={"roomParticipants" + participant.id}
           user={participant}
-          additionalAttributes={{ size: "xs" }}
         />
       ))}
-      {participants.length > MAX_PARTICIPANTS_NUM && (
+      {participants.length > maxParticipants && (
         <Text fontWeight={"bold"}>...</Text>
       )}
     </>

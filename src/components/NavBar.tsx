@@ -6,7 +6,7 @@ import UserProfile from "./UserProfile";
 
 const NavBar = () => {
   return (
-    <HStack spacing={"60px"} p={'30px'}>
+    <HStack spacing="60px" px="20px" py="30px">
       <Link to={""}>
         <HStack>
           <Image src={logo} boxSize="35px" />

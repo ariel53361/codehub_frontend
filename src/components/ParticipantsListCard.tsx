@@ -4,9 +4,10 @@ import {
   CardBody,
   CardHeader,
   HStack,
+  Stack,
   Text,
 } from "@chakra-ui/react";
-import User from "../entities/User";
+import { User } from "../entities/User";
 import ParticipantDetails from "./ParticipantDetails";
 
 interface Props {
@@ -20,15 +21,20 @@ const ParticipantsListCard = ({ participantsNum, participants }: Props) => {
       <CardHeader bg={"#696d97"} h={"2px"} borderTopRadius={"7px"}>
         <HStack h={"100%"}>
           <Box>PARTICIPANTS</Box>
-          <Text fontSize={"sm"} fontWeight={"normal"} color={"#71c6dd"}>
+          <Text fontSize={"sm"} fontWeight={"normal"} color={"primaryBlue"}>
             ({participantsNum} joined)
           </Text>
         </HStack>
       </CardHeader>
       <CardBody>
-        {participants.map((p) => (
-          <ParticipantDetails key={"participantCard" + p.id} participant={p} />
-        ))}
+        <Stack spacing={'7px'}>
+          {participants.map((p) => (
+            <ParticipantDetails
+              key={"participantCard" + p.id}
+              participant={p}
+            />
+          ))}
+        </Stack>
       </CardBody>
     </Card>
   );

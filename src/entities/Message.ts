@@ -1,10 +1,14 @@
-import User from "./User";
-import Room from "./Room";
+import { User } from "./User";
+import { Room } from "./Room";
 
-export default interface Message {
+export interface Message {
   id: number;
   user: User;
   room: Room;
   content: string;
   created: string;
+}
+
+export interface MessagePayload {
+  content: string;
 }

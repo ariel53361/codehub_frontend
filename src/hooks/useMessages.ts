@@ -8,10 +8,10 @@ import { AxiosError } from "axios";
 const apiClient = new APIClient<Message>("/messages");
 
 const useMessages = () => {
-  return useQuery<FetchResponse<Message>,AxiosError<ApiError>>({
+  return useQuery<FetchResponse<Message>, AxiosError<ApiError>>({
     queryKey: ["messages"],
     queryFn: () => apiClient.getAll(),
-    staleTime: ms("5s"),
+    staleTime: Infinity,
   });
 };
 

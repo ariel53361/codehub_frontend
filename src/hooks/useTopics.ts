@@ -12,7 +12,7 @@ const useTopics = () =>
   useQuery<FetchResponse<Topic>, AxiosError<ApiError>>({
     queryKey: ["topics"],
     queryFn: apiClient.getAll,
-    staleTime: ms("12h"),
-    initialData: intialTopics,
+    staleTime: ms("1h"),
+    // initialData: intialTopics,
   });
 export default useTopics;

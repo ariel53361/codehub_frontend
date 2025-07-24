@@ -11,7 +11,8 @@ const useRoom = (id: string) =>
   useQuery<Room, AxiosError<ApiError>>({
     queryKey: ["room", id],
     queryFn: () => apiClient.get(id),
-    staleTime: ms("30s"),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
   });
 
 export default useRoom;

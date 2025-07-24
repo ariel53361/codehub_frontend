@@ -21,7 +21,7 @@ const useRooms = (roomQuery: RoomQuery) => {
         },
       }),
 
-    staleTime: ms("5m"),
+    staleTime: Infinity,
     keepPreviousData: true,
   });
 };

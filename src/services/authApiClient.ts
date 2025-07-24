@@ -13,6 +13,10 @@ class AuthAPIClient {
       .then((res) => res.data);
   };
 
+  refresh = () => {
+    return axiosInstance.post("auth/jwt/refresh/").then((res) => res.data);
+  };
+  
   getCurrentUser = () => {
     return axiosInstance.get<User>("auth/users/me/").then((res) => res.data);
   };

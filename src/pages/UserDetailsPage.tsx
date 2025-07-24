@@ -26,7 +26,7 @@ import {
 } from "../constants/formFields";
 import { UserAvatar } from "../components/UserAvatar";
 import ApiErrorDisplay from "../components/ApiErrorDisplay";
-import { DEFAULT_AVATAR_PATH } from "../constants/defaultAvatarUrl";
+import { DEFAULT_AVATAR_PATH } from "../constants/api";
 
 const UserDetailsPage = () => {
   const { userId } = useParams();

@@ -24,7 +24,7 @@ const RoomPage = () => {
         lg: "1fr 250px",
       }}
     >
-      <GridItem pl="2" area={"main"}>
+    <GridItem pl="2" area={"main"}>
         <ChatCard room={room} />
       </GridItem>
       <Show above="lg">

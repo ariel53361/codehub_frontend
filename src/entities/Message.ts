@@ -1,10 +1,11 @@
 import { User } from "./User";
 import { Room } from "./Room";
 import { CHAT_MESSAGE, PING, PONG, WS_ERROR } from "../constants/webSocket";
+import { Profile } from "./Profile";
 
 export interface Message {
   id: number;
-  user: User;
+  profile: Profile;
   room: Room;
   content: string;
   created: string;
@@ -19,7 +20,7 @@ export interface WebSocketMessage {
   message?: {
     content: string;
     created: string;
-    user: User;
+    profile: Profile;
     room: Room;
   };
   error?: {

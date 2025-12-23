@@ -25,18 +25,22 @@ import ApiErrorDisplay from "../components/ApiErrorDisplay";
 
 const CreateRoomPage = () => {
   const { data: topics, error: fetchTopicsError } = useTopics();
+
   const [selectedTopic, setSelectedTopic] = useState<Topic | undefined>();
   const [subject, setSubject] = useState<string | undefined>();
+
   const navigate = useNavigate();
   const {
     mutate: createRoom,
     error: createRoomError,
     isLoading,
   } = useCreateRoom(() => navigate("/"));
+
   const [validationErrors, setValidationErrors] = useState({
     topic: "",
     subject: "",
   });
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -62,7 +66,7 @@ const CreateRoomPage = () => {
       return;
     }
     const newRoom = {
-      topic: selectedTopic,
+      topic: selectedTopic.id,
       subject: subject!,
       description: "",
     };

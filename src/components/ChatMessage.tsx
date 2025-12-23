@@ -9,12 +9,12 @@ interface Props {
 }
 
 const ChatMessage = ({ message }: Props) => {
-  const user = message.user;
+  const profile = message.profile;
   return (
     <Box paddingX={"15px"} borderLeft={"solid"}>
       <HStack>
-        <LinkedAvatar user={user}/>
-        <LinkedUsername user={user} isHighlighted={true} />
+        <LinkedAvatar profile={profile}/>
+        <LinkedUsername profile={profile} isHighlighted={true} />
         <FormatedDate date={message.created} />
       </HStack>
       <Text fontWeight={"normal"}>{message.content}</Text>

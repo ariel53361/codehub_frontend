@@ -1,28 +1,34 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import APIClient from "../services/apiClient";
-import { User } from "../entities/User";
+import { useMutation } from "@tanstack/react-query";
+import UserAPIclient from "../services/userApiClient";
 import useAuthStore from "../store/authStore";
 import { ApiError } from "../services/apiTypes";
 import { AxiosError } from "axios";
+import { User, UserPayload } from "../entities/User";
 
-const apiClient = new APIClient<FormData, User>("/users");
+const userApiClient = new UserAPIclient();
 
-const useUpdateUser = (userId: string, postSuccessFuncs?: () => void) => {
-  const queryClient = useQueryClient();
-  const setUser = useAuthStore((s) => s.setUser);
-  return useMutation<User, AxiosError<ApiError>, FormData>({
-    mutationFn: (updatedUser) =>
-      apiClient.patch(userId, updatedUser).then((res) => res),
-    onSuccess: (savedUser) => {
-      if (postSuccessFuncs) postSuccessFuncs();
-      setUser(savedUser);
-      queryClient.invalidateQueries({
-        queryKey: ["users", userId],
+const useUpdateUser = (postSuccessFuncs?: () => void) => {
+  return useMutation<User, AxiosError<ApiError>, UserPayload>({
+    mutationFn: (data) => {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined) {
+          formData.append(key, value);
+        }
       });
-      queryClient.invalidateQueries({
-        queryKey: ["rooms"],
-      });
+
+      return userApiClient.updateCurrentUser(formData);
     },
+    // onSuccess: (savedUser) => {
+    //   if (postSuccessFuncs) postSuccessFuncs();
+    //   setUser({user:savedUser});
+    //   queryClient.invalidateQueries({
+    //     queryKey: ["profiles", profileId],
+    //   });
+    //   queryClient.invalidateQueries({
+    //     queryKey: ["rooms"],
+    //   });
+    // },
   });
 };
 

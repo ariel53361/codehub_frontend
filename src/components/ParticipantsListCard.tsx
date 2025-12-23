@@ -7,12 +7,12 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { User } from "../entities/User";
 import ParticipantDetails from "./ParticipantDetails";
+import { Profile } from "../entities/Profile";
 
 interface Props {
   participantsNum: number;
-  participants: User[];
+  participants: Profile[];
 }
 
 const ParticipantsListCard = ({ participantsNum, participants }: Props) => {
@@ -27,7 +27,7 @@ const ParticipantsListCard = ({ participantsNum, participants }: Props) => {
         </HStack>
       </CardHeader>
       <CardBody>
-        <Stack spacing={'7px'}>
+        <Stack spacing={"7px"}>
           {participants.map((p) => (
             <ParticipantDetails
               key={"participantCard" + p.id}

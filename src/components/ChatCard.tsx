@@ -25,7 +25,7 @@ interface Props {
 const ChatCard = ({ room }: Props) => {
   const host = room.host;
   const accessToken = useAuthStore((s) => s.accessToken);
- 
+
   return (
     <Card>
       <CardHeader bg={"primaryPurple"} h={"2px"} borderTopRadius={"7px"}>
@@ -46,8 +46,8 @@ const ChatCard = ({ room }: Props) => {
             HOSTED BY
           </Text>
           <HStack>
-            <LinkedAvatar user={host} />
-            <LinkedUsername user={host} isHighlighted={true} />
+            <LinkedAvatar profile={host} />
+            <LinkedUsername profile={host} isHighlighted={true} />
           </HStack>
           <ChatMessageList roomId={room.id} />
         </VStack>

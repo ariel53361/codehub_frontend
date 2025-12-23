@@ -9,7 +9,7 @@ const RoomPage = () => {
   const { roomId } = useParams();
   const { data: room, error } = useRoom(roomId!);
 
-  if(error) return <ApiErrorDisplay error={error}/>
+  if (error) return <ApiErrorDisplay error={error} />;
   if (!room) return null;
 
   return (
@@ -24,7 +24,7 @@ const RoomPage = () => {
         lg: "1fr 250px",
       }}
     >
-    <GridItem pl="2" area={"main"}>
+      <GridItem pl="2" area={"main"}>
         <ChatCard room={room} />
       </GridItem>
       <Show above="lg">

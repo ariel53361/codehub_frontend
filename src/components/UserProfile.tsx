@@ -5,18 +5,26 @@ import LinkedAvatar from "./LinkedAvatar";
 import { UserAvatar } from "./UserAvatar";
 
 const UserProfile = () => {
-  const user = useAuthStore((s) => s.user);
+  const profile = useAuthStore((s) => s.profile);
   const clearAuthData = useAuthStore((s) => s.clearAuthData);
   const navigate = useNavigate();
 
   return (
     <HStack>
-      {user ? <LinkedAvatar user={user} /> : <UserAvatar />}
-
-      {user?.username ? (
+      {profile ? (
+        <LinkedAvatar
+          profile={profile}
+        />
+      ) : (
+        <UserAvatar />
+      )}
+      {profile?.user.username ? (
         <HStack gap={"30px"}>
           <Text whiteSpace={"nowrap"}>
-            welcome <Link to={`/user-details/${user.id}`}>{user.username}</Link>
+            welcome{" "}
+            <Link to={`/user-details/${profile.id}`}>
+              {profile?.user.username}
+            </Link>
           </Text>
           <Button
             variant="link"

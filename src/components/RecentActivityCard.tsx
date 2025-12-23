@@ -15,11 +15,11 @@ const RecentActivitiesCard = ({ message }: Props) => {
         <CardBody>
           <HStack>
             <Flex>
-              <LinkedAvatar user={message.user} />
+              <LinkedAvatar profile={message.profile} />
             </Flex>
             <Flex direction="column">
-              <Link to={`/user-details/${message.user.id}`}>
-                <Text color={"primaryBlue"}>{message.user.username}</Text>
+              <Link to={`/user-details/${message.profile.id}`}>
+                {/* <Text color={"primaryBlue"}>{message.user.username}</Text> */}
               </Link>
               <FormatedDate
                 date={message.created}

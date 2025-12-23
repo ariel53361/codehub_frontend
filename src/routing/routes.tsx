@@ -17,7 +17,7 @@ const router = createBrowserRouter([
       { path: "/room/:roomId", element: <RoomPage /> },
       { path: "/login", element: <LoginForm /> },
       { path: "/signup", element: <SignUpPage /> },
-      { path: "/user-details/:userId", element: <UserDetailsPage /> },
+      { path: "/user-details/:profileId", element: <UserDetailsPage /> },
       {
         element: <PrivateRoutes />,
         children: [

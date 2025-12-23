@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
-import { User } from "../entities/User";
 import { Text } from "@chakra-ui/react";
+import { Profile } from "../entities/Profile";
 
 interface Props {
-  user: User;
+  profile: Profile;
   isHighlighted?: boolean;
 }
 
-const LinkedUsername = ({ user, isHighlighted = false }: Props) => {
+const LinkedUsername = ({ profile, isHighlighted = false }: Props) => {
   return (
-    <Link to={`/user-details/${user.id}`}>
+    <Link to={`/user-details/${profile.id}`}>
       <Text color={isHighlighted ? "primaryBlue" : undefined}>
-        {user.username}
+        {profile.user.username}
       </Text>
     </Link>
   );

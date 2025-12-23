@@ -1,11 +1,11 @@
 import { Text } from "@chakra-ui/react";
-import { User } from "../entities/User";
 import LinkedAvatar from "./LinkedAvatar";
+import { Profile } from "../entities/Profile";
 
 const maxParticipants = 12;
 
 interface Props {
-  participants: User[];
+  participants: Profile[];
 }
 
 const RoomParticipants = ({ participants }: Props) => {
@@ -14,7 +14,7 @@ const RoomParticipants = ({ participants }: Props) => {
       {participants.slice(0, maxParticipants).map((participant) => (
         <LinkedAvatar
           key={"roomParticipants" + participant.id}
-          user={participant}
+          profile={participant}
         />
       ))}
       {participants.length > maxParticipants && (

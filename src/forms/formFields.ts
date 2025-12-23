@@ -1,11 +1,12 @@
-import { UserPayload } from "../entities/User";
+import { UpdateUserProfileFormValues } from "./UserProfileFormValues";
 
 interface FormField {
-  id: keyof UserPayload;
+  id: keyof UpdateUserProfileFormValues;
   label: string;
   type: string;
   accept?: string;
 }
+
 export const baseFormFields: FormField[] = [
   { id: "username", label: "Username", type: "text" },
   { id: "email", label: "Email", type: "email" },
@@ -23,7 +24,7 @@ export const UpdateUserFormFields: FormField[] = [
   ),
 ];
 
-export const userDetailsFormFields: FormField[] = [
+export const UserDetailsFormFields: FormField[] = [
   ...baseFormFields.filter(
     (field) => field.id !== "password" && field.id != "avatar"
   ),

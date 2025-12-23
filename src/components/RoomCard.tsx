@@ -33,10 +33,10 @@ const RoomCard = ({ room }: Props) => {
           <Flex alignItems="center" justifyContent="space-between">
             <Flex gap="2" alignItems="center">
               <LinkedAvatar
-                user={room.host}
+                profile={room.host}
                 border="2px solid var(--chakra-colors-primaryBlue)"
               />
-              <LinkedUsername user={room.host} />
+              <LinkedUsername profile={room.host} />
             </Flex>
             <FormatedDate date={room.created} />
           </Flex>

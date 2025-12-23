@@ -20,11 +20,13 @@ class APIClient<T, R = T> {
       .get<T>(`codehub${this.endpoint}/${id}`)
       .then((res) => res.data);
   };
+
   patch = (id: string, updatedInstance: T): Promise<R> => {
     return axiosInstance
       .patch<R>(`codehub${this.endpoint}/${id}`, updatedInstance)
       .then((res) => res.data);
   };
+  
   post = (postedInstance: T) => {
     return axiosInstance
       .post(`codehub${this.endpoint}/`, postedInstance)

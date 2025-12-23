@@ -1,16 +1,16 @@
 import { AvatarProps } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { User } from "../entities/User";
 import { UserAvatar } from "./UserAvatar";
+import { Profile } from "../entities/Profile";
 
 interface Props extends Omit<AvatarProps, "src"> {
-  user: User;
+  profile: Profile;
 }
 
-const LinkedAvatar = ({ user, ...avatarProps }: Props) => {
+const LinkedAvatar = ({ profile, ...avatarProps }: Props) => {
   return (
-    <Link to={`/user-details/${user.id}`}>
-      <UserAvatar src={user.avatar} {...avatarProps} />
+    <Link to={`/user-details/${profile.id}`}>
+      <UserAvatar src={profile.avatar} {...avatarProps} />
     </Link>
   );
 };

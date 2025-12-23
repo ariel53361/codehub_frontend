@@ -5,6 +5,7 @@ import {
   HStack,
   Button,
   Heading,
+  Text,
 } from "@chakra-ui/react";
 import RecentActivitiesList from "../components/RecentActivitiesList";
 import RoomList from "../components/RoomList";
@@ -16,6 +17,7 @@ import useRoomQueryStore from "../store/roomQueryStore";
 const HomePage = () => {
   const selectedTopic = useRoomQueryStore((s) => s.roomQuery.topic);
   const navigate = useNavigate();
+
   return (
     <Grid
       templateAreas={{
@@ -33,7 +35,8 @@ const HomePage = () => {
           <TopicList />
         </GridItem>
         <GridItem area="asideRight">
-          <RecentActivitiesList />
+          {/* <RecentActivitiesList /> */}
+          <Text>To do...</Text>
         </GridItem>
       </Show>
       <GridItem area="main">

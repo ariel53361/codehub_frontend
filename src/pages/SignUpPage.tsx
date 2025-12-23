@@ -14,45 +14,34 @@ import {
 import { useNavigate } from "react-router-dom";
 import useCreateUser from "../hooks/useCreateUser";
 import { createUserSchema } from "../schemas/userSchema";
-import { baseFormFields } from "../constants/formFields";
+import { baseFormFields } from "../forms/formFields";
 import { FieldValues, useForm } from "react-hook-form";
-import { UserPayload } from "../entities/User";
+import { CreateUserProfileFormValues } from "../forms/UserProfileFormValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ApiErrorDisplay from "../components/ApiErrorDisplay";
+import useRegisterWithAutoLogin from "../hooks/useCreateUser";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
 
   const formFields = baseFormFields;
   const {
-    mutate: createUser,
-    error: createUserErrors,
+    mutate: registerAndLogin,
+    error: registerAndLoginErrors,
     isLoading,
-  } = useCreateUser(() => {
-    navigate("/login");
+  } = useRegisterWithAutoLogin(() => {
+    navigate("/");
   });
   const {
     register,
     handleSubmit,
     formState: { errors: validationErrors },
-  } = useForm<UserPayload>({
+  } = useForm<CreateUserProfileFormValues>({
     resolver: zodResolver(createUserSchema),
   });
 
-  const onSubmit = (formData: FieldValues) => {
-    const userFormData = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key === "avatar") {
-        if (value instanceof File) {
-          userFormData.append("avatar", value);
-        } 
-      } else {
-        if (value !== undefined) {
-          userFormData.append(key, value);
-        }
-      }
-    });
-    createUser(userFormData);
+  const onSubmit = (formData: CreateUserProfileFormValues) => {
+    registerAndLogin(formData);
   };
 
   return (
@@ -87,7 +76,7 @@ const SignUpPage = () => {
                   )}
                 </Box>
               ))}
-              <ApiErrorDisplay error={createUserErrors}/>
+              <ApiErrorDisplay error={registerAndLoginErrors} />
               <HStack justify="center" w="100%" spacing="4">
                 <Button type="submit" isDisabled={isLoading}>
                   Sign Up

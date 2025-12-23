@@ -1,40 +1,41 @@
 import { create, StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { User } from "../entities/User";
-import AuthAPIClient from "../services/authApiClient";
+import { Profile } from "../entities/Profile";
+import UserApiClient from "../services/userApiClient";
+import ProfileAPIClient from "../services/profileApiClient";
 
 interface AuthStore {
-  user: User | null;
+  profile: Profile | null;
   accessToken: string | null;
+  setProfile: (user: Profile | null) => void;
   setAccessToken: (token: string) => void;
-  setUser: (user: User | null) => void;
   clearAuthData: () => void;
   fetchUser: () => Promise<void>;
 }
 
-const authApiClient = new AuthAPIClient();
+const userApiClient = new UserApiClient();
+const profileApiClient = new ProfileAPIClient();
 
 const useAuthStore = create<AuthStore>(
   persist<AuthStore>(
     (set) => ({
-      user: null,
+      profile: null,
       accessToken: null,
+      setProfile: (user) => set({ profile: user }),
       setAccessToken: (accessToken) => set({ accessToken }),
-      setUser: (user) => set({ user }),
       clearAuthData: () => {
-        set({ user: null, accessToken: null });
+        set({ profile: null, accessToken: null });
       },
       fetchUser: () => {
-        return authApiClient
+        return userApiClient
           .getCurrentUser()
-          .then((data) => {
-            set({ user: data });
-            console.log(data)
+          .then((user) => {
+            return profileApiClient.getCurrentProfile().then((profile) => {
+              set({ profile });
+            });
           })
-          .catch((err: Error) => {
-            throw new Error(
-              "Failed to fetch user data. Please try logging in again."
-            );
+          .catch((err) => {
+            throw new Error("Failed to fetch user data. Please log in again.");
           });
       },
     }),

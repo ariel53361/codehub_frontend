@@ -1,17 +1,17 @@
 import { HStack, VStack } from "@chakra-ui/react";
-import { User } from "../entities/User";
 import LinkedAvatar from "./LinkedAvatar";
 import LinkedUsername from "./LinkedUsername";
+import { Profile } from "../entities/Profile";
 
 interface Props {
-  participant: User;
+  participant: Profile;
 }
 const ParticipantDetails = ({ participant }: Props) => {
   return (
     <HStack spacing={"12px"}>
-      <LinkedAvatar user={participant} />
+      <LinkedAvatar profile={participant} />
       <VStack spacing={"0px"} align={"start"}>
-        <LinkedUsername user={participant} isHighlighted={true} />
+        <LinkedUsername profile={participant} isHighlighted={true} />
       </VStack>
     </HStack>
   );

@@ -1,18 +1,18 @@
 import Topic from "./Topic";
-import { User } from "./User";
+import { Profile } from "./Profile";
 
 export interface Room {
   id: number;
   topic: Topic;
   subject: string;
-  host: User;
-  participants: User[];
+  host: Profile;
+  participants: Profile[];
   participants_num: number;
   created: string;
 }
 
 export interface RoomPayload {
-  topic: Topic;
+  topic: number;
   subject: string;
   // description: string;
 }

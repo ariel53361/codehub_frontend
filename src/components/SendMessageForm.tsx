@@ -12,11 +12,9 @@ interface Props {
 const SendMessageForm = ({ room }: Props) => {
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const [lengthError, setLengthError] = useState<string>("");
-  const user = useAuthStore((s) => s.user);
+  const profile = useAuthStore((s) => s.profile);
 
-  const { sendMessage, error: sendMessageError } = useSendMessage(
-    room.id,
-  );
+  const { sendMessage, error: sendMessageError } = useSendMessage(room.id);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,7 +33,7 @@ const SendMessageForm = ({ room }: Props) => {
 
     const newMessage: Message = {
       id: Date.now(),
-      user: user!,
+      profile: profile!,
       created: new Date().toISOString(),
       content,
       room,

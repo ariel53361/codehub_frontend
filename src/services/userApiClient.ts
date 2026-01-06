@@ -1,8 +1,8 @@
 import axiosInstance from "./axiosInstance";
-import { User } from "../entities/User";
+import { User, UserPayload } from "../entities/User";
 
 class UserAPIClient {
-  createUser = (newUser: FormData) => {
+  createUser = (newUser: UserPayload) => {
     return axiosInstance.post("auth/users/", newUser).then((res) => res.data);
   };
 

@@ -12,17 +12,18 @@ const useUpdateProfile = (postSuccessFuncs?: () => void) => {
   const setProfile = useAuthStore((s) => s.setProfile);
   return useMutation<Profile, AxiosError<ApiError>, ProfilePayload>({
     mutationFn: (data) => {
-      const formData = new FormData();
+      const profileFormData = new FormData();
 
-      formData.append("bio", data.bio ?? "");
+      if (data.avatar instanceof File) {
+        profileFormData.append("avatar", data.avatar);
+      } else if (data.avatar === null) profileFormData.append("avatar", "");
 
-      if (data.avatar === null) {
-        formData.append("avatar", "");
-      } else if (data.avatar instanceof File) {
-        formData.append("avatar", data.avatar);
+      if (typeof data.bio === "string") {
+        profileFormData.append("bio", data.bio);
       }
+      console.log("profile avatar: ",data.avatar)
 
-      return profileApiClient.updateCurrentProfile(formData);
+      return profileApiClient.updateCurrentProfile(profileFormData);
     },
     onSuccess: (savedProfile) => {
       if (postSuccessFuncs) postSuccessFuncs();

@@ -12,14 +12,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import useCreateUser from "../hooks/useCreateUser";
 import { createUserSchema } from "../schemas/userSchema";
 import { baseFormFields } from "../forms/formFields";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { CreateUserProfileFormValues } from "../forms/UserProfileFormValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ApiErrorDisplay from "../components/ApiErrorDisplay";
-import useRegisterWithAutoLogin from "../hooks/useCreateUser";
+import useRegisterWithAutoLogin from "../hooks/useRegisterWithAutoLogin";
 
 const SignUpPage = () => {
   const navigate = useNavigate();

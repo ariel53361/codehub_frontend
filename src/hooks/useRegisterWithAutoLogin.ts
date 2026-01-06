@@ -8,6 +8,7 @@ import ProfileAPIClient from "../services/profileApiClient";
 import useAuthStore from "../store/authStore";
 import { Profile } from "../entities/Profile";
 import { Credentials } from "./useLogin";
+import { UserPayload } from "../entities/User";
 
 const userApiClient = new UserAPIClient();
 const profileApiClient = new ProfileAPIClient();
@@ -17,34 +18,39 @@ const useRegisterWithAutoLogin = (postSuccessFunc?: () => void) => {
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const setProfile = useAuthStore((s) => s.setProfile);
 
-  return useMutation<Profile, AxiosError<ApiError>, CreateUserProfileFormValues>({
-    mutationFn: (newUser) => {
-      const userFormData = new FormData();
-      userFormData.append("username", newUser.username);
-      userFormData.append("password", newUser.password);
-      userFormData.append("email", newUser.email);
-      if (newUser.first_name) userFormData.append("first_name", newUser.first_name);
-      if (newUser.last_name) userFormData.append("last_name", newUser.last_name);
-
+  return useMutation<
+    Profile,
+    AxiosError<ApiError>,
+    CreateUserProfileFormValues
+  >({
+    mutationFn: (data) => {
+      const user: UserPayload = {
+        username: data.username,
+        password: data.password,
+        email: data.email,
+        first_name: data.first_name,
+        last_name: data.last_name,
+      };
       return userApiClient
-        .createUser(userFormData) 
+        .createUser(user)
         .then(() => {
           const credentials: Credentials = {
-            username: newUser.username,
-            password: newUser.password,
+            username: data.username,
+            password: data.password,
           };
           return authApiClient.login(credentials);
         })
-        .then((tokens) =>{
+        .then((tokens) => {
           setAccessToken(tokens.access);
-          
-          const profileFormData = new FormData();
-          profileFormData.append("bio", newUser.bio ?? "");
 
-          if (newUser.avatar === null) {
-            profileFormData.append("avatar", "");
-          } else if (newUser.avatar instanceof File) {
-            profileFormData.append("avatar", newUser.avatar);
+          const profileFormData = new FormData();
+          
+          if (data.avatar instanceof File) {
+            profileFormData.append("avatar", data.avatar);
+          }
+
+          if (typeof data.bio === "string") {
+            profileFormData.append("bio", data.bio);
           }
 
           return profileApiClient.updateCurrentProfile(profileFormData);
@@ -55,7 +61,7 @@ const useRegisterWithAutoLogin = (postSuccessFunc?: () => void) => {
         });
     },
 
-    onSuccess:(profile) => {
+    onSuccess: (profile) => {
       if (postSuccessFunc) postSuccessFunc();
     },
   });

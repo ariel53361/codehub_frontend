@@ -7,3 +7,8 @@ export interface FetchResponse<T> {
 export interface ApiError {
   [key: string]: string[];
 }
+
+export interface ActivationPayload {
+  uid: string;
+  token: string;
+}

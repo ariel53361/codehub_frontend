@@ -7,6 +7,7 @@ import SignUpPage from "../pages/SignUpPage";
 import CreateRoomPage from "../pages/CreateRoomPage";
 import UserDetailsPage from "../pages/UserDetailsPage";
 import PrivateRoutes from "./PrivateRoutes";
+import ActivateAccountPage from "../pages/ActivateAccountPage";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginForm /> },
       { path: "/signup", element: <SignUpPage /> },
       { path: "/user-details/:profileId", element: <UserDetailsPage /> },
+      { path: "/activate/:uid/:token", element: <ActivateAccountPage /> },
       {
         element: <PrivateRoutes />,
         children: [

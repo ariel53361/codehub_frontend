@@ -13,15 +13,26 @@ export const userBaseSchema = z.object({
     .optional(),
 });
 
+const passwordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters");
 export const createUserSchema = z.object({
   ...userBaseSchema.shape,
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: passwordSchema,
 });
 
 export const updateUserSchema = z.object({
   ...userBaseSchema.shape,
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .optional(),
+  password: passwordSchema.optional(),
 });
+
+export const setPasswordSchema = z
+  .object({
+    current_password: passwordSchema,
+    new_password: passwordSchema,
+    re_new_password: passwordSchema,
+  })
+  .refine((data) => data.new_password === data.re_new_password, {
+    path: ["re_new_password"],
+    message: "Passwords do not match",
+  });

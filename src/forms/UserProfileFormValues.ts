@@ -1,3 +1,6 @@
+import { z } from "zod";
+import { setPasswordSchema } from "../schemas/userSchema";
+
 export interface UserProfileBaseFormValues {
   username: string;
   email: string;
@@ -11,8 +14,10 @@ export interface CreateUserProfileFormValues extends UserProfileBaseFormValues {
   password: string;
 }
 
-export interface SetPasswordFormValues {
-  current_password: string;
-  new_password: string;
-  re_new_password: string;
-}
+// export interface SetPasswordFormValues {
+//   current_password: string;
+//   new_password: string;
+//   re_new_password: string;
+// }
+
+export type SetPasswordFormValues = z.infer<typeof setPasswordSchema>;

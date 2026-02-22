@@ -15,13 +15,17 @@ import { SetPasswordFormValues } from "../forms/UserProfileFormValues";
 import useSetPassword from "../hooks/useSetPassword";
 import { useNavigate } from "react-router-dom";
 import ApiErrorDisplay from "../components/ApiErrorDisplay";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { setPasswordSchema } from "../schemas/userSchema";
 
 export const SetPasswordPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors: validationErrors },
-  } = useForm<SetPasswordFormValues>();
+  } = useForm<SetPasswordFormValues>({
+    resolver: zodResolver(setPasswordSchema),
+  });
 
   const { mutate: setPassword, error: error, isLoading } = useSetPassword();
 

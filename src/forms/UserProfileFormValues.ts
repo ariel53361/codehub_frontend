@@ -1,6 +1,5 @@
-export interface UpdateUserProfileFormValues {
+export interface UserProfileBaseFormValues {
   username: string;
-  password?: string;
   email: string;
   first_name?: string;
   last_name?: string;
@@ -8,12 +7,12 @@ export interface UpdateUserProfileFormValues {
   bio?: string;
 }
 
-export interface CreateUserProfileFormValues {
-  username: string;
+export interface CreateUserProfileFormValues extends UserProfileBaseFormValues {
   password: string;
-  email: string;
-  first_name?: string;
-  last_name?: string;
-  avatar?: File | null;
-  bio?: string;
+}
+
+export interface SetPasswordFormValues {
+  current_password: string;
+  new_password: string;
+  re_new_password: string;
 }

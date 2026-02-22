@@ -13,24 +13,23 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { createUserSchema } from "../schemas/userSchema";
-import { baseFormFields } from "../forms/formFields";
+import { registerFormFields } from "../forms/formFields";
 import { useForm } from "react-hook-form";
 import { CreateUserProfileFormValues } from "../forms/UserProfileFormValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ApiErrorDisplay from "../components/ApiErrorDisplay";
-import useRegisterWithAutoLogin from "../hooks/useRegisterWithAutoLogin";
+import useRegister from "../hooks/useRegister";
+import { useActivationStore } from "../store/activationStore";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
 
-  const formFields = baseFormFields;
+  const formFields = registerFormFields;
   const {
-    mutate: registerAndLogin,
-    error: registerAndLoginErrors,
+    mutate: registerUser,
+    error: registerErrors,
     isLoading,
-  } = useRegisterWithAutoLogin(() => {
-    navigate("/");
-  });
+  } = useRegister();
   const {
     register,
     handleSubmit,
@@ -39,15 +38,21 @@ const SignUpPage = () => {
     resolver: zodResolver(createUserSchema),
   });
 
+  const setPendingEmail = useActivationStore((s) => s.setPendingEmail);
   const onSubmit = (formData: CreateUserProfileFormValues) => {
-    registerAndLogin(formData);
+    registerUser(formData, {
+      onSuccess: () => {
+        setPendingEmail(formData.email);
+        navigate("/check-email", { state: { email: formData.email } });
+      },
+    });
   };
 
   return (
     <HStack justify={"center"} marginY={"30px"}>
       <Card w={"500px"}>
         <CardHeader
-          bg={"primaryPurple"}
+          bg={"primaryBlue"}
           h={"20px"}
           borderTopRadius={"7px"}
           display={"flex"}
@@ -75,7 +80,7 @@ const SignUpPage = () => {
                   )}
                 </Box>
               ))}
-              <ApiErrorDisplay error={registerAndLoginErrors} />
+              <ApiErrorDisplay error={registerErrors} />
               <HStack justify="center" w="100%" spacing="4">
                 <Button type="submit" isDisabled={isLoading}>
                   Sign Up

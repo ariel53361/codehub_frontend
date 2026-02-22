@@ -30,7 +30,7 @@ const LoginForm = () => {
       <HStack justify={"center"} marginY={"30px"}>
         <Card w={"500px"}>
           <CardHeader
-            bg={"primaryPurple"}
+            bg={"primaryBlue"}
             h={"20px"}
             borderTopRadius={"7px"}
             display={"flex"}

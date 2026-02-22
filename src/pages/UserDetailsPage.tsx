@@ -4,7 +4,7 @@ import useUpdateUser from "../hooks/useUpdateUser";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserPayload } from "../entities/User";
-import { updateUserSchema } from "../schemas/userSchema";
+import { userBaseSchema } from "../schemas/userSchema";
 import {
   Box,
   Button,
@@ -19,17 +19,14 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import {
-  UpdateUserFormFields,
-  UserDetailsFormFields,
-} from "../forms/formFields";
+import { baseUserFormFields, updateUserFormFields } from "../forms/formFields";
 import { UserAvatar } from "../components/UserAvatar";
 import ApiErrorDisplay from "../components/ApiErrorDisplay";
 import { DEFAULT_AVATAR_PATH } from "../constants/api";
 import useProfile from "../hooks/useProfile";
 import useUpdateProfile from "../hooks/useUpdateProfile";
 import { ProfilePayload } from "../entities/Profile";
-import { UpdateUserProfileFormValues } from "../forms/UserProfileFormValues";
+import { UserProfileBaseFormValues } from "../forms/UserProfileFormValues";
 
 const UserDetailsPage = () => {
   const { profileId } = useParams();
@@ -38,20 +35,12 @@ const UserDetailsPage = () => {
   const [toggleUpdate, setToggleUpdate] = useState(false);
 
   const isCurrentUser = currentUser?.id.toString() === profileId;
-  const formFields = isCurrentUser
-    ? UpdateUserFormFields
-    : UserDetailsFormFields;
+  const formFields = isCurrentUser ? updateUserFormFields : baseUserFormFields;
 
   const { data: profile, error: fetchingProfileError } = useProfile(profileId!);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(
-    profile?.avatar || null
+    profile?.avatar || null,
   );
-
-  useEffect(() => {
-    if (profile) {
-      setSelectedAvatar(profile.avatar || null);
-    }
-  }, [profile]);
 
   const {
     mutate: updateUser,
@@ -72,8 +61,8 @@ const UserDetailsPage = () => {
     handleSubmit,
     setValue,
     formState: { errors: validationErrors },
-  } = useForm<UpdateUserProfileFormValues>({
-    resolver: zodResolver(updateUserSchema),
+  } = useForm<UserProfileBaseFormValues>({
+    resolver: zodResolver(userBaseSchema),
   });
 
   useEffect(() => {
@@ -83,10 +72,12 @@ const UserDetailsPage = () => {
       setValue("email", user.email);
       setValue("first_name", user.first_name);
       setValue("last_name", user.last_name);
+
+      setSelectedAvatar(profile.avatar || null);
     }
   }, [profile, setValue]);
 
-  const onSubmit = (formData: UpdateUserProfileFormValues) => {
+  const onSubmit = (formData: UserProfileBaseFormValues) => {
     if (!profile) return;
 
     const userPayload: UserPayload = {
@@ -109,7 +100,7 @@ const UserDetailsPage = () => {
     <HStack justify={"center"} marginY={"30px"}>
       <Card w={"500px"}>
         <CardHeader
-          bg={"primaryPurple"}
+          bg={"primaryBlue"}
           h={"20px"}
           borderTopRadius={"7px"}
           display={"flex"}
@@ -136,22 +127,24 @@ const UserDetailsPage = () => {
                   />
                   {field.id === "avatar" && (
                     <>
-                      <Text>
-                        {"Current: " +
-                          (selectedAvatar &&
-                          selectedAvatar !== DEFAULT_AVATAR_PATH
-                            ? selectedAvatar.split("/").pop()
-                            : "No avatar selected")}
-                      </Text>
-                      <Button
-                        isDisabled={!toggleUpdate}
-                        onClick={() => {
-                          setValue("avatar", null);
-                          setSelectedAvatar(null);
-                        }}
-                      >
-                        Remove Avatar
-                      </Button>
+                      <VStack align="start" spacing={2}>
+                        <Text>
+                          {"Current: " +
+                            (selectedAvatar &&
+                            selectedAvatar !== DEFAULT_AVATAR_PATH
+                              ? selectedAvatar.split("/").pop()
+                              : "No avatar selected")}
+                        </Text>
+                        <Button
+                          isDisabled={!toggleUpdate}
+                          onClick={() => {
+                            setValue("avatar", null);
+                            setSelectedAvatar(null);
+                          }}
+                        >
+                          Remove Avatar
+                        </Button>
+                      </VStack>
                     </>
                   )}
 
@@ -162,10 +155,21 @@ const UserDetailsPage = () => {
                   )}
                 </Box>
               ))}
+
               <ApiErrorDisplay error={fetchingProfileError} />
               <ApiErrorDisplay error={updateUserErrors} />
+              <ApiErrorDisplay error={updateProfileErrors} />
+
               {isCurrentUser && (
                 <HStack justify="center" w="100%" spacing="4">
+                  <Button
+                    onClick={() => {
+                      navigate("/set-password");
+                    }}
+                  >
+                    Change Password
+                  </Button>
+
                   <Button
                     isDisabled={toggleUpdate}
                     onClick={() => setToggleUpdate(true)}
@@ -175,12 +179,12 @@ const UserDetailsPage = () => {
                   <Button
                     isDisabled={!toggleUpdate || isUpdatingUser}
                     type="submit"
+                    isLoading={isUpdatingUser && isUpdatingProfile}
                   >
                     Save
                   </Button>
                 </HStack>
               )}
-              {isUpdatingUser && <Spinner />}
             </VStack>
           </form>
         </CardBody>

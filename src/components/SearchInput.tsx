@@ -13,7 +13,7 @@ const SearchInput = () => {
         if (ref.current) onSearch(ref.current.value);
       }}
     >
-      <InputGroup >
+      <InputGroup>
         <InputLeftElement children={<BsSearch />}  />
         <Input
           ref={ref}

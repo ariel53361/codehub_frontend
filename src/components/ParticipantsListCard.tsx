@@ -18,7 +18,7 @@ interface Props {
 const ParticipantsListCard = ({ participantsNum, participants }: Props) => {
   return (
     <Card>
-      <CardHeader bg={"#696d97"} h={"2px"} borderTopRadius={"7px"}>
+      <CardHeader bg={"primaryBlue"} h={"2px"} borderTopRadius={"7px"}>
         <HStack h={"100%"}>
           <Box>PARTICIPANTS</Box>
           <Text fontSize={"sm"} fontWeight={"normal"} color={"primaryBlue"}>

@@ -10,7 +10,7 @@ const TopicList = () => {
 
   if (isLoading) return <Spinner />;
   return (
-    <VStack spacing="30px" align="start">
+    <VStack spacing="30px" align="start" mt="12px">
       <Text>BROWSE TOPICS</Text>
 
       <Button

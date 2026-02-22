@@ -1,7 +1,7 @@
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { WebSocketMessage } from "../entities/Message";
 import { useEffect, useRef } from "react";
-import { WS_ERROR } from "../constants/webSocket";
+import { PING, WS_ERROR } from "../constants/webSocket";
 
 interface Props {
   socketUrl: string;
@@ -43,7 +43,7 @@ const useWebSocketConnection = ({
           console.error(
             "Failed to parse WebSocket message:",
             event.data,
-            error
+            error,
           );
         }
       },
@@ -53,7 +53,7 @@ const useWebSocketConnection = ({
     const interval = setInterval(() => {
       const timeSinceLastActivity = Date.now() - lastActivityRef.current;
       if (readyState === ReadyState.OPEN && timeSinceLastActivity > 15000) {
-        sendJsonMessage({ type: "ping" });
+        sendJsonMessage({ type: PING });
         console.log("send ping");
         lastActivityRef.current = Date.now();
       }

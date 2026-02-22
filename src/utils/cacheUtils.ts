@@ -1,48 +1,77 @@
 import { QueryClient } from "@tanstack/react-query";
 import { Message } from "../entities/Message";
 
-export const addMessageToInfiniteCache = (
+export const patchMessageByClientIdInInfiniteCache = (
   queryClient: QueryClient,
   roomId: number,
-  newMessage: Message
+  clientId: string,
+  patch: Partial<Message>,
 ) => {
-  queryClient.setQueriesData(["room", roomId], (oldData: any) => {
+  queryClient.setQueryData(["room", roomId], (oldData: any) => {
     if (!oldData) return oldData;
-
-    const firstPage = oldData.pages[0];
-    const updatedFirstPage = {
-      ...firstPage,
-      results: [newMessage, ...firstPage.results],
-      count: firstPage.count + 1,
-    };
 
     return {
       ...oldData,
-      pages: [updatedFirstPage, ...oldData.pages.slice(1)],
+      pages: oldData.pages.map((page: any) => ({
+        ...page,
+        results: page.results.map((m: Message) =>
+          m.client_id === clientId ? { ...m, ...patch } : m,
+        ),
+      })),
     };
   });
 };
 
-export const removeMessageFromInfiniteCache = (
+export const upsertByClientIdInInfiniteCache = (
   queryClient: QueryClient,
   roomId: number,
-  messageId?: number
+  incoming: Message,
 ) => {
-  queryClient.setQueriesData(["room", roomId], (oldData: any) => {
-    if (!oldData || !messageId) return oldData;
+  queryClient.setQueryData(["room", roomId], (oldData: any) => {
+    if (!oldData) return oldData;
 
-    const updatedPages = oldData.pages.map((page: any) => {
-      const filtered = page.results.filter((m: Message) => m.id !== messageId);
-      return {
-        ...page,
-        results: filtered,
-        count: page.count - (filtered.length < page.results.length ? 1 : 0),
-      };
+    let found = false;
+
+    const pages = oldData.pages.map((page: any) => {
+      const results = page.results.map((m: Message) => {
+        if (
+          m.client_id &&
+          incoming.client_id &&
+          m.client_id === incoming.client_id
+        ) {
+          found = true;
+          return { ...m, ...incoming };
+        }
+        return m;
+      });
+
+      return { ...page, results };
     });
+
+    if (!found) {
+      pages[0] = {
+        ...pages[0],
+        results: [incoming, ...pages[0].results],
+      };
+    }
+
+    return { ...oldData, pages };
+  });
+};
+
+export const addMessageToInfiniteCache = (
+  queryClient: QueryClient,
+  roomId: number,
+  message: Message,
+) => {
+  queryClient.setQueryData(["room", roomId], (oldData: any) => {
+    if (!oldData) return oldData;
 
     return {
       ...oldData,
-      pages: updatedPages,
+      pages: oldData.pages.map((page: any, index: number) =>
+        index === 0 ? { ...page, results: [message, ...page.results] } : page,
+      ),
     };
   });
 };

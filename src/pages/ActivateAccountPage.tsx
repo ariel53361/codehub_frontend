@@ -10,6 +10,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import useActivateAccount from "../hooks/useActivateAccount";
 import { useEffect } from "react";
+import { useActivationStore } from "../store/activationStore";
 
 const ActivateAccountPage = () => {
   const {
@@ -27,9 +28,11 @@ const ActivateAccountPage = () => {
   }, [uid, token, activate]);
 
   const navigate = useNavigate();
+  const clearActivationData = useActivationStore((s) => s.clearActivationData);
   useEffect(() => {
     if (!isSuccess) return;
 
+    clearActivationData();
     const timer = setTimeout(() => {
       navigate("/login");
     }, 3000);

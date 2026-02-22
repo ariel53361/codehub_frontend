@@ -4,6 +4,7 @@ import useSendMessage from "../hooks/useSendMessage";
 import { Message } from "../entities/Message";
 import useAuthStore from "../store/authStore";
 import { Room } from "../entities/Room";
+import { v4 as uuid } from "uuid";
 
 interface Props {
   room: Room;
@@ -37,6 +38,7 @@ const SendMessageForm = ({ room }: Props) => {
       created: new Date().toISOString(),
       content,
       room,
+      client_id: uuid(),
     };
 
     sendMessage(newMessage);

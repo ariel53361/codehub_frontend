@@ -25,6 +25,3 @@ export const updateUserSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .optional(),
 });
-
-export type CreateUserFormData = z.infer<typeof createUserSchema>;
-export type UpdateUserFormData = z.infer<typeof updateUserSchema>;

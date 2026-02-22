@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   CardBody,
   CardHeader,
@@ -28,7 +29,7 @@ const ChatCard = ({ room }: Props) => {
 
   return (
     <Card>
-      <CardHeader bg={"primaryPurple"} h={"2px"} borderTopRadius={"7px"}>
+      <CardHeader bg={"primaryBlue"} h={"2px"} borderTopRadius={"7px"}>
         <Flex align={"center"} h="100%">
           <Link to={"/"}>
             <IoArrowBack size={"19px"} />
@@ -51,7 +52,7 @@ const ChatCard = ({ room }: Props) => {
           </HStack>
           <ChatMessageList roomId={room.id} />
         </VStack>
-        {accessToken && <SendMessageForm room={room} />}
+        <Box mt={4}>{accessToken && <SendMessageForm room={room} />}</Box>
       </CardBody>
     </Card>
   );

@@ -1,106 +1,100 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ReadyState } from "react-use-websocket";
-import { useQueryClient } from "@tanstack/react-query";
-import { Message } from "../entities/Message";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+
+import { Message, WebSocketMessage } from "../entities/Message";
 import useAuthStore from "../store/authStore";
-import { CHAT_MESSAGE, TOKEN_EXPIRED } from "../constants/webSocket";
+import { ACK, CHAT_MESSAGE, TOKEN_EXPIRED } from "../constants/webSocket";
 import { WS_BASE_URL } from "../constants/api";
 import AuthAPIClient from "../services/authApiClient";
 import useWebSocketConnection from "./useWebSocketConnection";
 import {
   addMessageToInfiniteCache,
-  removeMessageFromInfiniteCache,
+  patchMessageByClientIdInInfiniteCache,
+  upsertByClientIdInInfiniteCache,
 } from "../utils/cacheUtils";
 
 const useSendMessage = (roomId: number) => {
   const queryClient = useQueryClient();
-
   const { accessToken, setAccessToken, clearAuthData } = useAuthStore();
 
   const pendingMessageRef = useRef<Message | null>(null);
-
   const [error, setError] = useState<string | null>(null);
 
   const refreshJwt = useCallback(() => {
     const authApiClient = new AuthAPIClient();
     return authApiClient
       .refresh()
-      .then(({ access }) => {
-        setAccessToken(access);
-      })
-      .catch(() => {
-        clearAuthData();
-      });
-    // למה צריך את הרשימת תלויות הזאת? אולי למחוק אותה...
+      .then(({ access }) => setAccessToken(access))
+      .catch(() => clearAuthData());
   }, [setAccessToken, clearAuthData]);
 
-  const handleExpiredToken = () => {
-    refreshJwt().catch(() => {
-      removeMessageFromInfiniteCache(
-        queryClient,
-        roomId,
-        pendingMessageRef.current?.id
-      );
-    });
-  };
-
   const socketUrl = useMemo(
-    () => buildWebSocketURL(roomId, accessToken),
-    [roomId, accessToken]
+    () => `${WS_BASE_URL}rooms/${roomId}/?token=${accessToken}`,
+    [roomId, accessToken],
   );
 
   const { sendJsonMessage, readyState } = useWebSocketConnection({
     socketUrl,
     shouldReconnect: () => true,
+
     onOpen: () => {
       setError(null);
-      const message = pendingMessageRef.current;
-      console.log(message);
-      if (message) {
+
+      if (pendingMessageRef.current) {
         sendJsonMessage({
           type: CHAT_MESSAGE,
-          message: message,
+          message: pendingMessageRef.current,
         });
-        pendingMessageRef.current = null;
       }
     },
-    onError: () => {
-      setError(
-        "Unable to connect to the chat server. Check network connection."
-      );
+
+    onMessage: (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === ACK) {
+        const { client_id, server_id } = data.message!;
+
+        patchMessageByClientIdInInfiniteCache(queryClient, roomId, client_id, {
+          id: server_id,
+        });
+
+        if (pendingMessageRef.current?.client_id === client_id) {
+          pendingMessageRef.current = null;
+        }
+        return;
+      }
+
+      if (data.type === CHAT_MESSAGE) {
+        upsertByClientIdInInfiniteCache(queryClient, roomId, {
+          ...data.message,
+        });
+      }
     },
-    onClose: ({ code }: CloseEvent) => {
-      switch (code) {
-        case TOKEN_EXPIRED:
-          handleExpiredToken();
-          break;
-        default:
-          removeMessageFromInfiniteCache(
-            queryClient,
-            roomId,
-            pendingMessageRef.current?.id
-          );
-          console.log("error code aaaaaaaaaaaa", code);
-          setError("Unknown error.");
-          break;
+
+    onClose: ({ code }) => {
+      if (code === TOKEN_EXPIRED) {
+        refreshJwt();
+      } else {
+        setError("WebSocket connection error");
       }
     },
   });
 
-  const sendMessage = (newMessage: Message) => {
+  //  אולי זה בעיה ששולח טיפוס Message - לבדוק את זה
+  const sendMessage = (message: Message) => {
+    pendingMessageRef.current = message;
+
+    addMessageToInfiniteCache(queryClient, roomId, message);
+
     if (readyState === ReadyState.OPEN) {
-      addMessageToInfiniteCache(queryClient, roomId, newMessage);
       sendJsonMessage({
         type: CHAT_MESSAGE,
-        message: { ...newMessage },
+        message,
       });
-    } else pendingMessageRef.current = newMessage;
+    }
   };
 
   return { sendMessage, error };
 };
 
-const buildWebSocketURL = (roomId: number, accessToken: string | null) => {
-  return `${WS_BASE_URL}rooms/${roomId}/?token=${accessToken}`;
-};
 export default useSendMessage;

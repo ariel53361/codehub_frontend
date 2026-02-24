@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import ApiErrorDisplay from "../components/ApiErrorDisplay";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { setPasswordSchema } from "../schemas/userSchema";
+import { setPasswordFormField } from "../forms/formFields";
 
 export const SetPasswordPage = () => {
   const {
@@ -50,52 +51,22 @@ export const SetPasswordPage = () => {
         <CardBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack spacing="20px">
-              <Box w={"100%"}>
-                <FormLabel htmlFor="current_password">
-                  Current Password
-                </FormLabel>
-                <Input
-                  {...register("current_password")}
-                  id="current_password"
-                  type="password"
-                  name="current_password"
-                />
-                {validationErrors["current_password"] && (
-                  <Text color="red">
-                    {validationErrors["current_password"]?.message}
-                  </Text>
-                )}
-              </Box>
-              <Box w={"100%"}>
-                <FormLabel htmlFor="new_password">New Password</FormLabel>
-                <Input
-                  {...register("new_password")}
-                  id="new_password"
-                  type="password"
-                  name="new_password"
-                />
-                {validationErrors["new_password"] && (
-                  <Text color="red">
-                    {validationErrors["new_password"]?.message}
-                  </Text>
-                )}
-              </Box>
-              <Box w={"100%"}>
-                <FormLabel htmlFor="re_new_password">
-                  Confirm New Password
-                </FormLabel>
-                <Input
-                  {...register("re_new_password")}
-                  id="re_new_password"
-                  type="password"
-                  name="re_new_password"
-                />
-                {validationErrors["re_new_password"] && (
-                  <Text color="red">
-                    {validationErrors["re_new_password"]?.message}
-                  </Text>
-                )}
-              </Box>
+              {setPasswordFormField.map((field) => (
+                <Box w={"100%"}>
+                  <FormLabel htmlFor={field.id}>{field.label}</FormLabel>
+                  <Input
+                    {...register(field.id)}
+                    id={field.id}
+                    type={field.type}
+                    name={field.id}
+                  />
+                  {validationErrors[field.id] && (
+                    <Text color="red">
+                      {validationErrors[field.id]?.message}
+                    </Text>
+                  )}
+                </Box>
+              ))}
               <Button
                 isLoading={isLoading}
                 type="submit"

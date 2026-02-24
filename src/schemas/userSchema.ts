@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const userBaseSchema = z.object({
+export const userProfileBaseSchema = z.object({
   username: z.string().min(1, "Username is required"),
   email: z.string().email("Invalid email format"),
   first_name: z.string().optional(),
@@ -17,12 +17,12 @@ const passwordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters");
 export const createUserSchema = z.object({
-  ...userBaseSchema.shape,
+  ...userProfileBaseSchema.shape,
   password: passwordSchema,
 });
 
 export const updateUserSchema = z.object({
-  ...userBaseSchema.shape,
+  ...userProfileBaseSchema.shape,
   password: passwordSchema.optional(),
 });
 

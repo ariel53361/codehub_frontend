@@ -1,5 +1,6 @@
 import {
   CreateUserProfileFormValues,
+  SetPasswordFormValues,
   UserProfileBaseFormValues,
 } from "./UserProfileFormValues";
 
@@ -30,6 +31,7 @@ export const updateUserFormFields: FormField<UserProfileBaseFormValues>[] = [
   ...baseUserFormFields,
   avatarField,
 ];
+
 const passwordField: FormField<CreateUserProfileFormValues> = {
   id: "password",
   label: "Password",
@@ -39,4 +41,10 @@ const passwordField: FormField<CreateUserProfileFormValues> = {
 export const registerFormFields: FormField<CreateUserProfileFormValues>[] = [
   ...baseUserFormFields,
   passwordField,
+];
+
+export const setPasswordFormField: FormField<SetPasswordFormValues>[] = [
+  { id: "current_password", label: "Password", type: "password" },
+  { id: "new_password", label: "New Password", type: "password" },
+  { id: "re_new_password", label: "Confirm New Password", type: "password" },
 ];

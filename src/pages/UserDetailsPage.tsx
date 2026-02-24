@@ -4,7 +4,7 @@ import useUpdateUser from "../hooks/useUpdateUser";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserPayload } from "../entities/User";
-import { userBaseSchema } from "../schemas/userSchema";
+import { userProfileBaseSchema } from "../schemas/userSchema";
 import {
   Box,
   Button,
@@ -62,7 +62,7 @@ const UserDetailsPage = () => {
     setValue,
     formState: { errors: validationErrors },
   } = useForm<UserProfileBaseFormValues>({
-    resolver: zodResolver(userBaseSchema),
+    resolver: zodResolver(userProfileBaseSchema),
   });
 
   useEffect(() => {
@@ -88,7 +88,6 @@ const UserDetailsPage = () => {
     };
 
     const profilePayload: ProfilePayload = {
-      bio: formData.bio ?? profile.bio ?? "",
       avatar: formData.avatar,
     };
 

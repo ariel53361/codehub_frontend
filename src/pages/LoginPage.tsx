@@ -13,15 +13,18 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import useLogin from "../hooks/useLogin";
 import ApiErrorDisplay from "../components/ApiErrorDisplay";
+import { useActivationStore } from "../store/activationStore";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { error, isLoading, mutate: login } = useLogin(() => navigate("/"));
+  const clearActivationData = useActivationStore((s) => s.clearActivationData);
   const navigate = useNavigate();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    clearActivationData();
     login({ username, password });
   };
 

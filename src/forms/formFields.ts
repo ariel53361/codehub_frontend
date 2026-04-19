@@ -6,12 +6,12 @@ import {
 
 type InputType = "text" | "email" | "password" | "file";
 
-type FormField<TValues> = {
+interface FormField<TValues> {
   id: keyof TValues;
   label: string;
   type: InputType;
   accept?: string;
-};
+}
 
 export const baseUserFormFields: FormField<UserProfileBaseFormValues>[] = [
   { id: "username", label: "Username", type: "text" },
